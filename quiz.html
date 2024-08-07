@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz dos Objetos Litúrgicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #f4f4f4, #e2e2e2);
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 1em;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 0.5em;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav ul li {
+            margin: 0 1em;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        nav ul li a:hover {
+            color: #4CAF50;
+            text-decoration: underline;
+        }
+        main {
+            padding: 2em;
+        }
+        h2 {
+            color: #4CAF50;
+            font-size: 2em;
+            text-align: center;
+            margin-bottom: 1em;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 1em;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .quiz-container:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        .quiz-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            transition: opacity 0.5s ease;
+        }
+        .quiz-container img:hover {
+            opacity: 0.8;
+        }
+        .quiz-container input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-top: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+        .quiz-container input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        .quiz-container button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .quiz-container button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        .result {
+            font-size: 18px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        footer {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 1em;
+            font-size: 0.8em;
+            position: relative;
+            bottom: 0;
+            margin: 0 auto;
+            max-width: 960px; /* Ajuste a largura máxima desejada */
+            border-radius: 8px; /* Bordas arredondadas para o footer */
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-church icon"></i>Quiz dos Objetos Litúrgicos</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="index.html"><i class="fas fa-home icon"></i>Home</a></li>
+            <li><a href="papel.html"><i class="fas fa-book icon"></i>O Papel do Cerimoniário</a></li>
+            <li><a href="responsabilidades.html"><i class="fas fa-tasks icon"></i>Responsabilidades</a></li>
+            <li><a href="dicas.html"><i class="fas fa-lightbulb icon"></i>Dicas Úteis</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="quiz">
+            <h2><i class="fas fa-question-circle icon"></i>Quiz dos Objetos Litúrgicos</h2>
+            <div class="quiz-container">
+                <img id="object-image" src="" alt="Objeto Litúrgico">
+                <input type="text" id="answer" placeholder="Digite o nome do objeto...">
+                <button onclick="checkAndNext()">Verificar</button>
+                <div class="result" id="result"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 Igreja Católica</p>
+    </footer>
+    <script>
+        const questions = [
+            { img: 'data:image/jpeg;base64,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', answer: 'Calice' },
+            { img: 'https://dcdn.mitiendanube.com/stores/281/141/products/patena-ref-31d-e3f60a7ed192b3827315132940309837-640-0.jpg', answer: 'Patena' },
+            { img: 'https://img.elo7.com.br/product/zoom/4133D53/corporal-liturgico-toalha.jpg', answer: 'Corporal' }
+        ];
+        
+        let currentQuestion = 0;
+
+        function loadQuestion() {
+            document.getElementById('object-image').src = questions[currentQuestion].img;
+            document.getElementById('answer').value = '';
+            document.getElementById('result').textContent = '';
+        }
+
+        function checkAndNext() {
+            const userAnswer = document.getElementById('answer').value.trim().toLowerCase();
+            const correctAnswer = questions[currentQuestion].answer.toLowerCase();
+
+            if (userAnswer === correctAnswer) {
+                document.getElementById('result').textContent = 'Correto!';
+                document.getElementById('result').style.color = 'green';
+                setTimeout(() => {
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        loadQuestion();
+                    } else {
+                        document.getElementById('result').textContent = 'Você completou o quiz!';
+                        document.getElementById('result').style.color = 'blue';
+                    }
+                }, 1000); // Delay antes de carregar a próxima pergunta
+            } else {
+                document.getElementById('result').textContent = 'Incorreto. Tente novamente.';
+                document.getElementById('result').style.color = 'red';
+            }
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
